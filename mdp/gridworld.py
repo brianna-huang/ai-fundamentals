@@ -159,7 +159,7 @@ class GUI(tk.Tk):
                 if cell == '#':
                     self.__draw_rectangle(i, j, fill='black')
                 elif cell == 'S':
-                    self.__draw_rectangle(i, j, fill='yellow')
+                    self.__draw_rectangle(i, j, fill='yellow4')
                 elif isinstance(cell, float):
                     if cell > 0:
                         self.__draw_rectangle(i, j, fill='green')
