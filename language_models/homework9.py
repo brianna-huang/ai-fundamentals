@@ -2,6 +2,10 @@
 # CIS 521: Homework 8
 ############################################################
 
+import math
+import random
+from collections import defaultdict
+import string
 student_name = "Brianna Huang"
 
 ############################################################
@@ -9,10 +13,6 @@ student_name = "Brianna Huang"
 ############################################################
 
 # Include your imports here, if any are used.
-import string
-from collections import defaultdict
-import random
-import math
 
 ############################################################
 # Section 1: Ngram Models
@@ -23,7 +23,7 @@ def tokenize(text):
     tokens = []
     curr = ""
     for char in text:
-        if char == " ":
+        if char.isspace():
             if curr:
                 tokens.append(curr)
                 curr = ""
@@ -38,14 +38,16 @@ def tokenize(text):
         tokens.append(curr)
     return tokens
 
+
 def ngrams(n, tokens):
     tokens = ["<START>"] * (n - 1) + tokens + ["<END>"]
     n_grams = []
     for i in range(len(tokens) - (n - 1)):
-        context = tuple(tokens[i : i + n - 1])
+        context = tuple(tokens[i: i + n - 1])
         token = tokens[i + n - 1]
         n_grams.append((context, token))
     return n_grams
+
 
 class NgramModel(object):
 
@@ -77,23 +79,17 @@ class NgramModel(object):
                 return token
 
     def random_text(self, token_count):
-        if self.n == 1:
-            context = ()
-        else:
-            context = ("<START>",) * (self.n -1)
-
+        context = ("<START>",) * (self.n - 1) if self.n > 1 else ()
         tokens = []
         for i in range(token_count):
             token = self.random_token(context)
+            tokens.append(token)
             if token == "<END>":
                 # reset to starting context
-                context = ("<START>",) * (self.n -1)
+                context = ("<START>",) * (self.n - 1) if self.n > 1 else ()
             else:
-                tokens.append(token)
-                if self.n > 1:
-                    context = context[1:] + (token,)
+                context = context[1:] + (token,) if self.n > 1 else ()
         return " ".join(tokens)
-
 
     def perplexity(self, sentence):
         tokens = tokenize(sentence)
@@ -113,7 +109,7 @@ def create_ngram_model(n, path):
             seq = line.strip()
             m.update(seq)
     return m
-            
+
 
 ############################################################
 # Section 2: Feedback
